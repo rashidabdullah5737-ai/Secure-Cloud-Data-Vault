@@ -1,0 +1,4 @@
+Flask
+cryptography
+argon2-cffi
+python-dotenv

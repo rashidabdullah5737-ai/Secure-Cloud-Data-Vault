@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Cloud Data Vault</title>
+</head>
+<body>
+    <h1>Secure Cloud Data Vault</h1>
+
+    <p>Welcome, {{ session.username }}!</p>
+
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    <h2>Add Confidential Record</h2>
+
+    <form method="POST" action="/add-record">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+        <input name="label" placeholder="Record title"
+               maxlength="100" required>
+
+        <textarea name="content"
+                  placeholder="Confidential information"
+                  maxlength="10000" required></textarea>
+
+        <button type="submit">Encrypt and Save</button>
+    </form>
+
+    <h2>Your Protected Records</h2>
+
+    {% for record in records %}
+        <article>
+            <h3>{{ record.label }}</h3>
+            <p>{{ record.content }}</p>
+
+            <form method="POST"
+                  action="/share/{{ record.id }}">
+
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token }}">
+
+                <button type="submit">
+                    Generate Temporary Sharing Link
+                </button>
+            </form>
+        </article>
+    {% else %}
+        <p>No records available.</p>
+    {% endfor %}
+
+    <form method="POST" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>
